@@ -1,0 +1,113 @@
+{
+  "scores": {
+    "recall_at_5": 1.0,
+    "numeric_accuracy": 1.0,
+    "groundedness": 1.0
+  },
+  "items": [
+    {
+      "id": "q01",
+      "type": "numeric",
+      "tools": [
+        "query_price_index"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 4538,
+      "answer": "The total index for multi-dwelling buildings rose 3.96%, from 1848.9 to 1922.1 (+73.2 points), between January 2024 and July 2026 (SCB FPIBOM, 2024-01 to 2026-07, 1968=100)."
+    },
+    {
+      "id": "q02",
+      "type": "numeric",
+      "tools": [
+        "query_price_index"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 2976,
+      "answer": "In December 2022 the total index for group-built small houses was **1645.2** (1968=100) (SCB FPIBOM, 2022-12)."
+    },
+    {
+      "id": "q03",
+      "type": "numeric",
+      "tools": [
+        "query_price_index"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 5302,
+      "answer": "Building material costs for multi-dwelling buildings (flerbostadshus) rose **30.94%** — from index 2116.30 in January 2021 to 2771.00 in December 2022, an increase of 654.70 points (SCB FPIBOM, 1968=100, 2021-01 to 2022-12)."
+    },
+    {
+      "id": "q04",
+      "type": "numeric",
+      "tools": [
+        "query_price_index"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 3592,
+      "answer": "The total construction cost index for agricultural buildings rose **37.82%** between January 2020 and January 2025, from 113.70 to 156.70 (absolute change +43.00 index points), 2015=100 (SCB FPIJBM15, 2020-01 to 2025-01)."
+    },
+    {
+      "id": "q05",
+      "type": "definition",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": null,
+      "groundedness": 1.0,
+      "latency_ms": 11878,
+      "answer": "**Byggkostnadsindex (BKI)** is a factor price index: it measures the price development of the production factors used in new construction of housing and agricultural buildings. It does **not** take the market situation into account — it is based on measured prices of a large set of goods and on wages ([SCB, BKI landing page](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/)).\n\n**Building types covered:** multi-dwelling buildings (flerbostadshus), group-built small houses (gruppbyggda småhus) and agricultural buildings (jordbruksbyggnader) — national level only, no regional breakdown.\n\n**Cost classes published** (total index plus components):\n- Contractor's costs (entreprenörens kostnader), which consist of:\n  - Built-in materials (inbyggt material), including building, HVAC (VVS) and electrical material\n  - Wages excluding wage drift (arbetslön)\n  - Machinery (maskiner)\n  - Transport, fuel and electricity\n  - Overheads (övriga omkostnader — salaried staff wages and general costs)\n- Client's costs (byggherrekostnader) — design/engineering (projektering), salaried staff, interest and credit costs, general costs\n\n**Construction:** a fixed-base Laspeyres index with weights based on cost shares in the weight base year 2015; the sub-indices are weighted together into a total index. It is calculated with and without wage drift, and excluding/including VAT (SCB, *Statistikens framställning Byggkostnadsindex 2026*, [PDF](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_staf_2026_260216.pdf); *Kvalitetsdeklaration 2026*, [PDF](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf))."
+    },
+    {
+      "id": "q06",
+      "type": "definition",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": null,
+      "groundedness": 1.0,
+      "latency_ms": 91255,
+      "answer": "**Byggherrekostnader = the client's/developer's own costs**, one of the two top-level cost classes in SCB's Byggkostnadsindex (the other being the contractor's costs, entreprenörens kostnader).\n\n**What it covers:** credit/construction-loan fees (kreditivavgift), interest, design and engineering (projektering), salaried staff wages and general administration (\"Kreditivavgift, ränta, projektering, administration m.m.\") — i.e. the costs the client bears outside the contractor's production costs ([SCB, Statistikens framställning BKI 2026](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_staf_2026_260216.pdf)).\n\n**Weights (per 10 000 of the total, 2015 weight base):** interest incl. credit fee 300, salaried wages 128, design 88 (projektering 84 in the listing), general costs 88 — total 600 within the sub-structure shown; in SCB's monthly releases the client's costs make up **18 %** of the total index and the contractor's costs 82 % ([SCB statistical news, Nov 2025](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-november-2025/)).\n\n**Sources:** the weights and share of total production cost for byggherrekostnader are based on a survey of a number of clients (byggherrar), with 2015 production as weight base; the design component is priced via agreed wage changes in the Almega area ([SCB, Kvalitetsdeklaration BKI 2026](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf)).\n\nBecause interest is a large part of it, this class is the most volatile one — e.g. in July 2022 higher interest costs pushed the client's costs up 6.2 % in one month, while in November 2025 they were 4.8 % lower than a year earlier (SCB statistical news). It is reported for multi-dwelling buildings, group-built small houses and agricultural buildings, and is available in the index as cost class BYGGKOST."
+    },
+    {
+      "id": "q07",
+      "type": "hybrid",
+      "tools": [
+        "query_price_index",
+        "query_price_index",
+        "search_docs",
+        "query_price_index",
+        "query_price_index",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 15496,
+      "answer": "**How much:** The total index for multi-dwelling buildings (flerbostadshus) rose from 1 508.9 to 1 744.8, i.e. +235.9 points or **+15.6 %** between December 2021 and December 2022 (SCB FPIBOM, 2021-12 to 2022-12). SCB notes this was the largest annual change since October 1974.\n\n**Why — main drivers (same table, same period):**\n- **Client's (byggherre) costs: +39.0 %** (981.6 → 1 364.4). These are dominated by interest costs, which SCB reports rose **138.0 %** between December 2021 and December 2022. Contractor's costs rose 10.9 % over the year ([SCB, December 2022 release](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-december-2022/)).\n- **Transport, fuel and electricity: +33.2 %** (2 445.2 → 3 256.8), driven during the year by electricity and diesel prices ([SCB, March 2022 release](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-mars-2022/)).\n- **Building materials: +13.7 %** (2 437.3 → 2 771.0). The surge came in the first half of 2022 — reinforcing steel and timber had extreme annual rates (e.g. +75.7 % and +59.3 % in March 2022) because of raw-material shortages and global demand; by late 2022 reinforcing steel and timber prices were falling again (same SCB releases)."
+    },
+    {
+      "id": "q08",
+      "type": "hybrid",
+      "tools": [
+        "query_price_index",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 45055,
+      "answer": "**Figures:** The transport, fuel and electricity sub-index for multi-dwelling buildings (flerbostadshus) rose from 2,194.50 in March 2021 to 2,780.80 in March 2022 — an increase of 586.30 points, or **+26.72%** (SCB FPIBOM, 2021-03 to 2022-03).\n\n**What drove it:** SCB's statistical news for March 2022 reports that within this group, electricity (elkraft) and diesel oil costs rose most, by 73.1% and 52.1% respectively over the same 12 months. For context, total construction costs for flerbostadshus rose 9.6% over that year, with contractors' costs up 11.1% ([SCB, Byggkostnadsindex mars 2022](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-mars-2022/))."
+    }
+  ]
+}

@@ -39,3 +39,7 @@ jobs:
         run: python -m ingest.ingest_prices
       - name: Ingest documents (re-embeds only changed ones)
         run: python -m ingest.ingest_docs ${{ inputs.force_reembed && '--force' || '' }}
+      - name: Check stored rows against SCB's published figures
+        run: |
+          python -m ingest.verify_against_scb | tee verify.md
+          cat verify.md >> "$GITHUB_STEP_SUMMARY"

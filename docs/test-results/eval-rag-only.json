@@ -1,0 +1,117 @@
+{
+  "scores": {
+    "recall_at_5": 1.0,
+    "numeric_accuracy": 0.6666666666666666,
+    "groundedness": 0.9821428571428572
+  },
+  "items": [
+    {
+      "id": "q01",
+      "type": "numeric",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 12658,
+      "answer": "**About +3.9 %.**\n\nUsing SCB's published index levels for Byggkostnadsindex för flerbostadshus (total, excl. wage drift and VAT):\n\n- January 2024: **149.4** ([SCB, Jan 2024](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-januari-2024/))\n- July 2026: **155.3** ([SCB, July 2026](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-juli-2026/))\n\n155.3 / 149.4 − 1 ≈ **+3.95 %** over the two-and-a-half years.\n\nSplit by component: contractor's costs rose from 139.7 to 150.7 (+7.9 %), while developer's (byggherre) costs fell from 193.8 to 176.3 (−9.0 %), mainly due to lower interest costs. Note the July 2026 annual rate alone was 3.2 %, the highest since January 2024 — i.e. costs were broadly flat through 2024–2025 before picking up in 2026."
+    },
+    {
+      "id": "q02",
+      "type": "numeric",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": false,
+      "groundedness": 0.857,
+      "latency_ms": 93372,
+      "answer": "I couldn't find that specific number in the documents available to me.\n\n- SCB's monthly statistical news releases (e.g. [\"Byggkostnadsindex för byggnader, december 2022\"](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-december-2022/)) only report the headline figures for **flerbostadshus** (multi-dwelling buildings): total BKI 141.0 in December 2022 (2015=100), +0.4 % vs November and +15.6 % vs December 2021.\n- Gruppbyggda småhus is published as a separate index series (total, entreprenörens kostnader, inbyggt material, arbetslön, maskiner, transporter/drivmedel/elkraft, övriga omkostnader, byggherrekostnader, plus versions incl./excl. VAT and löneglidning), per the [Kvalitetsdeklaration Byggkostnadsindex](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf), but its index values aren't quoted in the news releases.\n\nFor the exact December 2022 value for gruppbyggda småhus you'd need SCB's statistical database (Byggkostnadsindex, BKI, table for gruppbyggda småhus). Note also that the documentation warns against reading index values out of these text documents — a numeric index lookup tool isn't available to me in this session."
+    },
+    {
+      "id": "q03",
+      "type": "numeric",
+      "tools": [
+        "search_docs",
+        "search_docs",
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 79463,
+      "answer": "**Roughly +31 %** (building‑material costs, entrepreneur's byggmaterial component of BKI for flerbostadshus).\n\nSCB doesn't publish that exact span, so it has to be chained from published changes:\n\n| Period | Material cost change |\n|---|---|\n| Jan 2021 → Jan 2022 | +16.6 % ([Jan 2022 release](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-januari-2022/)) |\n| Dec 2021 → Jan 2022 | +1.2 % (same release) |\n| Dec 2021 → Dec 2022 | +13.7 % ([Dec 2022 release](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-december-2022/)) |\n\nSo Jan 2022 → Dec 2022 ≈ 1.137/1.012 − 1 ≈ +12.3 %, and Jan 2021 → Dec 2022 ≈ 1.166 × 1.123 ≈ **+31 %**.\n\nDrivers: timber and reinforcement steel spiked through 2021 (raw‑material shortages, global demand), then reinforcement steel/energy‑related materials rose sharply in 2022 while timber fell back (‑11.6 % Dec 2021–Dec 2022). For an exact figure, the underlying index series should be used rather than chained news releases."
+    },
+    {
+      "id": "q04",
+      "type": "numeric",
+      "tools": [
+        "search_docs",
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": false,
+      "groundedness": 1.0,
+      "latency_ms": 56762,
+      "answer": "I can't give you a reliable figure for that. Here's why:\n\n- SCB's Byggkostnadsindex (BKI) does publish a separate index for **agricultural buildings (jordbruksbyggnader)**, excluding wage drift, with base years 1980 and (from 2018) 2015, at national level only, broken down by cost class (contractor's costs, built-in material, wages, machinery, transport/fuel/electricity, overheads, developer's costs). See the product page: https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/ and the quality declaration: https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf\n- However, the documentation I can search only describes definitions, weights and methodology, plus the monthly statistical news releases — and those news releases report figures for **flerbostadshus (multi-dwelling buildings)**, not for agricultural buildings. No index values for jordbruksbyggnader for January 2020 or January 2025 appear in them, and I have no numeric index series available in this session.\n\nTo get the exact change, retrieve the series \"Byggkostnadsindex för jordbruksbyggnader, exkl. löneglidning (2015=100)\" for 2020M01 and 2025M01 from SCB's Statistical Database (SSD), table under PR0502, and compute (index 2025M01 / index 2020M01 − 1) × 100."
+    },
+    {
+      "id": "q05",
+      "type": "definition",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": null,
+      "groundedness": 1.0,
+      "latency_ms": 70366,
+      "answer": "**Byggkostnadsindex (BKI)** is a fixed-base factor price index (base year 2015) that measures the price development of the production factors used in new construction of **multi-dwelling buildings, group-built one- or two-dwelling houses, and agricultural buildings**. It does not reflect market/profit conditions — only measured prices of goods, wages, etc.\n\nIt is split into two main parts — the contractor's costs (entreprenörens kostnader) and the developer's costs (byggherrekostnader) — covering these cost classes:\n\n- **Inbyggt material** (built-in materials: concrete, timber, joinery, iron/steel, HVAC and electrical material etc.), prices excl. VAT\n- **Arbetslön** (wages incl. statutory/contractual social charges), published both excluding and including wage drift\n- **Maskiner** (depreciation, repairs, interest, administration for machinery and equipment)\n- **Transporter, drivmedel och elkraft** (lorry transport costs, diesel MK1, electricity incl. grid fee and energy tax)\n- **Övriga omkostnader** (salaried staff salaries, general overheads/administration)\n- **Byggherrekostnader** (interest and credit charges, design/projektering, administration etc.)\n\nIndices are published monthly (excl. wage drift) and quarterly incl. wage drift, both incl. and excl. VAT, at national level only (no regional breakdown). Weights are fixed, based on cost shares in 2015.\n\nSources:\n- https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/\n- https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_staf_2026_260216.pdf\n- https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf"
+    },
+    {
+      "id": "q06",
+      "type": "definition",
+      "tools": [
+        "search_docs",
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": true,
+      "numeric_ok": null,
+      "groundedness": 1.0,
+      "latency_ms": 52131,
+      "answer": "**Byggherrekostnader** are the costs borne by the developer/client (byggherre) — as opposed to the contractor's costs (entreprenörens kostnader). Together the two make up the total Byggkostnadsindex (BKI).\n\n**What they include:**\n- Interest and building-credit costs (ränte- och kreditivkostnader)\n- Design/engineering (projektering)\n- Central administration and other overheads\n([Kvalitetsdeklaration BKI 2026](https://www.scb.se/contentassets/176b9e8b85b44bafbcb858e0ac2ba884/pr0502_kd_2026_260216.pdf); [SCB statistical news, Dec 2022](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-december-2022/))\n\n**Weight:** 18% of the total index for flerbostadshus (contractor's costs 82%), based on 2015 cost shares. The weights and their share of total production cost are derived from a survey of a number of byggherrar.\n\n**How they are measured:** the projektering component is based on wage agreement changes in the Almega area; the interest component drives most of the short-run movement. For example, in November 2023 byggherrekostnaderna were up 28.2% year-on-year on the back of a 63.6% rise in interest costs, while in November 2025 they fell 4.8% as interest costs dropped 14.0% ([Nov 2025 news](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-november-2025/))."
+    },
+    {
+      "id": "q07",
+      "type": "hybrid",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 16119,
+      "answer": "**+15,6 %** from December 2021 to December 2022 — the largest annual change since October 1974 (index 141,0 in Dec 2022).\n\nDrivers (SCB, statistical news 2023-01-16):\n\n- **Contractors' costs (82 % weight) +10,9 %**, contributing 9,1 percentage points.\n  - *Transport, fuel and electricity +33,2 %* — electricity +99,4 %, diesel +28,2 %.\n  - *Building materials +13,7 %* — all material groups rose except timber (‑11,6 %); largest increases were flooring materials +28,4 %, reinforcement steel +27,1 %, electrical materials +19,2 %, iron and steel +18,0 %.\n  - Machinery +16,0 %, overheads +6,7 %, wages +2,3 %.\n- **Developer/client costs (byggherrekostnader, 18 %) +39,0 %**, contributing 6,5 percentage points — mainly interest costs, which rose **138,0 %**.\n\nSource: https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-december-2022/"
+    },
+    {
+      "id": "q08",
+      "type": "hybrid",
+      "tools": [
+        "search_docs",
+        "search_docs"
+      ],
+      "tools_as_expected": false,
+      "numeric_ok": true,
+      "groundedness": 1.0,
+      "latency_ms": 65347,
+      "answer": "Between March 2021 and March 2022, contractors' costs for the group **transport, fuel and electricity** for flerbostadshus (multi-dwelling buildings) rose by **26.7 percent**.\n\nThe main drivers within the group were:\n- **Electricity (elkraft): +73.1 %**\n- **Diesel oil: +52.1 %**\n\nFor context, total Byggkostnadsindex for flerbostadshus rose 9.6 % over the same period, with contractors' costs up 11.1 % (building materials +20.4 %, driven by reinforcement steel +75.7 % and timber +59.3 %, reflecting raw-material shortages and global demand) and developer (byggherre) costs up 2.5 %.\n\nSource: [SCB, Byggkostnadsindex för byggnader, mars 2022](https://www.scb.se/hitta-statistik/statistik-efter-amne/priser-och-ekonomiska-tendenser/priser/byggkostnadsindex-bki/pong/statistiknyhet/byggkostnadsindex-for-byggnader-mars-2022/)"
+    }
+  ]
+}
