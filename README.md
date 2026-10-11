@@ -1,5 +1,7 @@
 # Byggkostnad Agent
 
+**Live demo:** https://byggkostnad-agent.vercel.app · **API:** https://api-production-6fea9.up.railway.app/docs
+
 A question-answering agent over Swedish construction cost statistics from
 Statistics Sweden (SCB). It answers three kinds of question:
 
