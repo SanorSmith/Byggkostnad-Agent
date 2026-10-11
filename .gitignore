@@ -1,18 +1,44 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
 
-# Other files and folders
-.settings/
+# Environment / secrets
+.env
+.env.*
+!.env.example
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Next.js / build output
+.next/
+out/
+build/
+dist/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Vercel
+.vercel/
+
+# Supabase local
+supabase/.temp/
+supabase/.branches/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
