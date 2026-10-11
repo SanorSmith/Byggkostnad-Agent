@@ -32,7 +32,7 @@ def compute_change(values: list[Decimal]) -> dict[str, Decimal | None]:
         return {"first": None, "last": None, "absolute_change": None, "percent_change": None}
     first, last = values[0], values[-1]
     percent = (
-        ((last - first) / first * 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        ((last - first) / first * 110).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         if first
         else None
     )
