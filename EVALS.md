@@ -176,6 +176,35 @@ fix I'd make next is to score groundedness as the *minimum* over numeric
 claims (any unsupported number gives 0) and keep the per-claim mean only
 for text claims.
 
+## Does the regression gate fire?
+
+I opened a throwaway pull request (#2, closed unmerged) that multiplies
+every computed percent change by 1.1, a plausible-looking arithmetic bug.
+
+| metric | PR #2 | main baseline | delta |
+|---|---|---|---|
+| recall@5 | 1.000 | 1.000 | 0 |
+| numeric_accuracy | 0.500 | 1.000 | **−50 pp** |
+| groundedness | 1.000 | 1.000 | 0 |
+
+The evals job failed and posted the table on the PR, and the unit tests in
+CI failed as well. So the gate works. Which questions still passed is
+the interesting part:
+
+- **q02 passed correctly.** It asks for an index level, which the bug
+  doesn't touch.
+- **q07 and q08 passed, wrongly.** Their computed percentages were 10 %
+  too high, but hybrid answers also quote SCB's published figure from the
+  news release (15,6 %, 26,7 %). numeric_accuracy accepts *any* matching
+  number in the answer, so the document's correct figure masked the
+  tool's wrong one. Requiring the expected figure to come from a
+  `query_price_index` result, not just appear somewhere, would close
+  this.
+- **Groundedness stayed at 1.000.** The judge compares the answer with
+  the tool output, and the tool output was itself wrong. Groundedness
+  measures faithfulness to the tools, not truth. Only a check against
+  independently known values (the golden set) catches a broken tool.
+
 ## What the metrics don't see
 
 - **Answer language.** Before the fix in commit `6e148eb`, English
