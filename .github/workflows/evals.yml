@@ -1,0 +1,55 @@
+name: evals
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: evals-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: api/pyproject.toml
+      - run: pip install .
+      - name: Run golden set and compare with the latest main run
+        id: run
+        run: |
+          set +e
+          python -m evals.run_evals --compare
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+      - name: Post results on the pull request
+        if: github.event_name == 'pull_request' && always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### Eval results for ${GITHUB_SHA::7}"
+            echo
+            cat evals/results/latest.md
+          } > comment.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md
+      - name: Add results to the job summary
+        if: always()
+        run: cat evals/results/latest.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Fail on a regression of more than 3 percentage points
+        if: steps.run.outputs.exit_code != '0'
+        run: exit 1

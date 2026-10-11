@@ -1,0 +1,41 @@
+name: ingest
+
+# SCB publishes the index around the 15th of each month.
+on:
+  schedule:
+    - cron: "0 6 17 * *"
+  workflow_dispatch:
+    inputs:
+      force_reembed:
+        description: "Re-embed every document (needed after changing the embedding model)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: api/pyproject.toml
+      - run: pip install .
+      - name: Ingest price index tables
+        run: python -m ingest.ingest_prices
+      - name: Ingest documents (re-embeds only changed ones)
+        run: python -m ingest.ingest_docs ${{ inputs.force_reembed && '--force' || '' }}
