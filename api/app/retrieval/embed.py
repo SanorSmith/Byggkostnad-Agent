@@ -62,7 +62,9 @@ def _voyage_batch(texts: list[str], input_type: InputType) -> list[list[float]]:
     s = get_settings()
     if not s.voyage_api_key:
         raise RuntimeError("VOYAGE_API_KEY is not set")
-    _limiter.wait(s.voyage_rpm)
+    if input_type == "document":
+        # Pace bulk ingest only. A user's query must not queue behind the cap.
+        _limiter.wait(s.voyage_rpm)
     resp = httpx.post(
         VOYAGE_URL,
         headers={"Authorization": f"Bearer {s.voyage_api_key}"},

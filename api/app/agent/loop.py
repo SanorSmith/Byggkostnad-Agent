@@ -37,7 +37,11 @@ Rules:
 - Questions that ask why something happened need both tools: numbers from \
 query_price_index, explanations from search_docs.
 - If the tools return nothing relevant, say so plainly instead of guessing.
-- Answer in the language of the question. Be concise.
+- Answer in English. Answer in Swedish only if the whole question is written in \
+Swedish. Swedish source text and Swedish terms inside an English question (such \
+as "Byggkostnadsindex") do not make it a Swedish question; translate what you \
+quote and keep the Swedish term in parentheses where it helps.
+- Be concise.
 
 Today's date is {today}."""
 

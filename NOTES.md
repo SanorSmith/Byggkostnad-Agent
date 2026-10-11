@@ -160,3 +160,28 @@ Everything agrees, so I kept building.
   They are listed explicitly in `IRREGULAR_NEWS_SLUGS`. June never has a
   release. The final corpus is 67 documents and 290 chunks, averaging 343
   tokens (min 100, max 498).
+
+## First end-to-end runs (2026-10-11)
+
+- **All three demo questions routed correctly on the first try.**
+  - Question 1: one `query_price_index` call, with no `to_date`, so the
+    latest month was used. Answer: 1848.9 → 1934.2, +4.61 %.
+  - Question 2: two `search_docs` calls. The model rewrote the English
+    question into Swedish search terms on its own, e.g. "Vad mäter
+    byggkostnadsindex, vad ingår, kostnadsslag".
+  - Question 3: three `query_price_index` calls (total, materials,
+    transport/energy) plus one `search_docs` call.
+- **English questions came back in Swedish.** "Answer in the language of
+  the question" was not enough: the question contained the Swedish word
+  "Byggkostnadsindex" and every source was Swedish. Making English the
+  explicit default, with Swedish only for a fully Swedish question, fixed
+  both directions.
+- **One question took 72 s, and it was my own rate limiter.** The
+  client-side Voyage cap, added for bulk ingest, also throttled the live
+  API's query embeddings, so a user's question queued behind the ingest
+  run's quota. The cap now applies to document embeddings only.
+- **Voyage's 3 requests/minute without a payment method is the real
+  bottleneck for a public demo.** Each question runs one to three
+  searches, so two visitors in the same minute exceed the quota. Adding a
+  payment method raises the limit (the free token allowance still
+  applies).
