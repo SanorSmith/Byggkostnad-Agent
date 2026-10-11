@@ -1,0 +1,56 @@
+[project]
+name = "byggkostnad-agent"
+version = "1.0.0"
+description = "Question answering over SCB construction cost statistics"
+authors = [{ name = "Sanor Smith", email = "sanorsmith83@gmail.com" }]
+requires-python = ">=3.11"
+dependencies = [
+  "anthropic>=1.13,<2",
+  "fastapi>=0.140",
+  "uvicorn[standard]>=0.50",
+  "psycopg[binary,pool]>=3.2",
+  "pgvector>=0.4",
+  "numpy>=2.0",
+  "httpx>=0.28",
+  "pydantic>=2.10",
+  "pydantic-settings>=2.10",
+  "beautifulsoup4>=4.12",
+  "pypdf>=5.0",
+  "tenacity>=9.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.15", "mypy>=2.0", "pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*", "ingest*", "evals*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Swedish text and typographic dashes are intended
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+exclude = ['.venv']
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
