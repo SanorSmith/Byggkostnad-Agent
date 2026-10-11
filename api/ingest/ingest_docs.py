@@ -94,6 +94,12 @@ class FetchedDoc:
 # The index was called Faktorprisindex until 2022, and older releases keep
 # that name in their URL. Each month is tried under both names.
 NEWS_SLUG_PREFIXES = ["byggkostnadsindex-for-byggnader", "faktorprisindex-for-byggnader"]
+# Releases whose URL does not follow the pattern at all, as found on scb.se.
+IRREGULAR_NEWS_SLUGS: dict[tuple[int, int], str] = {
+    (2025, 5): "byggkostnadsindex-for-byggnader-maj-20252",
+    (2026, 2): "byggkostnadsindex-for-byggnader-februri-2026",
+    (2026, 8): "byggkostnadsindex-for-byggnader-august-2026",
+}
 
 
 def news_urls(today: date) -> list[list[str]]:
@@ -104,9 +110,10 @@ def news_urls(today: date) -> list[list[str]]:
         for i, month in enumerate(MONTHS_SV, start=1):
             if (year, i) > (today.year, today.month):
                 break
-            months.append(
-                [f"{BKI}/pong/statistiknyhet/{p}-{month}-{year}/" for p in NEWS_SLUG_PREFIXES]
-            )
+            candidates = [f"{p}-{month}-{year}" for p in NEWS_SLUG_PREFIXES]
+            if (year, i) in IRREGULAR_NEWS_SLUGS:
+                candidates.append(IRREGULAR_NEWS_SLUGS[(year, i)])
+            months.append([f"{BKI}/pong/statistiknyhet/{c}/" for c in candidates])
     return months
 
 

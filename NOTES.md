@@ -130,3 +130,33 @@ Everything agrees, so I kept building.
   insisting on one "main" figure would need a second LLM call to pick it.
   The cost: an answer that lists many numbers is easier to pass. EVALS.md
   says this.
+
+## First live ingest (2026-10-11)
+
+- **Voyage returned 429 after three documents.** On the tier with no
+  payment method, Voyage allows roughly 3 requests and 10k tokens per
+  minute. The first retry policy (5 attempts, at most 30 s apart) gave up
+  in under two minutes. Fixes:
+  - a client-side requests-per-minute cap (`VOYAGE_RPM`, default 3);
+  - batches capped by estimated tokens;
+  - backoff up to 65 s;
+  - one failed document no longer aborts the run. The exit code still
+    reports it, so CI sees it.
+- **A token estimate that is fine for chunk sizing was wrong for quota
+  maths.** The production-description PDF kept failing even with
+  retries. Its 8,000-token batch (by the 4 chars/token estimate) was over
+  10k tokens by Voyage's own count. Swedish text with long compounds and
+  table fragments tokenises denser than English. No amount of waiting
+  helps a request that exceeds the per-minute quota on its own. The batch
+  cap is now 4,000 estimated tokens.
+- **Every 2021 news release returned 404.** Until 2022 the index was
+  called *Faktorprisindex*, and those releases keep the old name in their
+  URL (`faktorprisindex-for-byggnader-mars-2021`). Ingest now tries both
+  slugs for every month. Without this fix the corpus held nothing from
+  before 2022, so questions about what led up to the 2022 rise had no
+  sources.
+- **Three releases have URLs no pattern would generate:**
+  `maj-20252`, `februri-2026`, and `august-2026` (English month name).
+  They are listed explicitly in `IRREGULAR_NEWS_SLUGS`. June never has a
+  release. The final corpus is 67 documents and 290 chunks, averaging 343
+  tokens (min 100, max 498).
