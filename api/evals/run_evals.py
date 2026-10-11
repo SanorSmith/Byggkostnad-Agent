@@ -41,7 +41,8 @@ Today's date is {today}."""
 
 
 def git_sha() -> str | None:
-    if sha := os.environ.get("GITHUB_SHA"):
+    # On pull requests GITHUB_SHA is a temporary merge commit; prefer the PR head.
+    if sha := os.environ.get("EVAL_GIT_SHA") or os.environ.get("GITHUB_SHA"):
         return sha
     try:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
