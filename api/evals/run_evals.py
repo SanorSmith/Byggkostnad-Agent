@@ -146,6 +146,8 @@ def main() -> int:
                 "unsupported_figures": missing,
                 "latency_ms": result.latency_ms,
                 "answer": result.answer,
+                # Kept so a run can be re-scored offline when a metric changes.
+                "tool_output": json.loads(tool_output),
             }
         )
 
