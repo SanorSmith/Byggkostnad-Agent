@@ -1,0 +1,77 @@
+{
+  "_comment": "TODO — Sanor rewrites this before the interview. Expected values are computed from SCB tables FPIBOM (1968=100) and FPIJBM15 (2015=100) as published 2026-09-15. Questions use fixed periods so expected values do not drift when a new month is published. tolerance_pct is relative to expected_value.",
+  "items": [
+    {
+      "id": "q01",
+      "question": "How much did the construction cost index for multi-dwelling buildings (flerbostadshus) rise between January 2024 and July 2026, in percent?",
+      "type": "numeric",
+      "expected_value": 3.96,
+      "tolerance_pct": 2.0,
+      "expected_source_contains": null,
+      "expected_tools": ["query_price_index"]
+    },
+    {
+      "id": "q02",
+      "question": "What was the total construction cost index for group-built small houses (gruppbyggda småhus) in December 2022?",
+      "type": "numeric",
+      "expected_value": 1645.2,
+      "tolerance_pct": 0.1,
+      "expected_source_contains": null,
+      "expected_tools": ["query_price_index"]
+    },
+    {
+      "id": "q03",
+      "question": "By how many percent did building material costs for flerbostadshus change from January 2021 to December 2022?",
+      "type": "numeric",
+      "expected_value": 30.94,
+      "tolerance_pct": 1.0,
+      "expected_source_contains": null,
+      "expected_tools": ["query_price_index"]
+    },
+    {
+      "id": "q04",
+      "question": "What was the percentage change in the construction cost index for agricultural buildings from January 2020 to January 2025?",
+      "type": "numeric",
+      "expected_value": 37.82,
+      "tolerance_pct": 1.0,
+      "expected_source_contains": null,
+      "expected_tools": ["query_price_index"]
+    },
+    {
+      "id": "q05",
+      "question": "What does Byggkostnadsindex include?",
+      "type": "definition",
+      "expected_value": null,
+      "tolerance_pct": null,
+      "expected_source_contains": "produktionsfaktorer",
+      "expected_tools": ["search_docs"]
+    },
+    {
+      "id": "q06",
+      "question": "What are byggherrekostnader (the client's costs) in the construction cost index?",
+      "type": "definition",
+      "expected_value": null,
+      "tolerance_pct": null,
+      "expected_source_contains": "byggherrekostnader",
+      "expected_tools": ["search_docs"]
+    },
+    {
+      "id": "q07",
+      "question": "The index for flerbostadshus rose sharply in 2022. How much did it rise from December 2021 to December 2022, and why?",
+      "type": "hybrid",
+      "expected_value": 15.63,
+      "tolerance_pct": 1.0,
+      "expected_source_contains": "december-2022",
+      "expected_tools": ["query_price_index", "search_docs"]
+    },
+    {
+      "id": "q08",
+      "question": "How much did transport, fuel and electricity costs for flerbostadshus rise between March 2021 and March 2022, and what drove the increase?",
+      "type": "hybrid",
+      "expected_value": 26.72,
+      "tolerance_pct": 1.0,
+      "expected_source_contains": "mars-2022",
+      "expected_tools": ["query_price_index", "search_docs"]
+    }
+  ]
+}
