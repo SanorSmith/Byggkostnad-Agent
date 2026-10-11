@@ -20,7 +20,8 @@ VOYAGE_URL = "https://api.voyageai.com/v1/embeddings"
 MAX_BATCH = 64
 # Voyage's lowest tier allows about 10k tokens and 3 requests per minute.
 # Batches are capped by estimated tokens so one request never exceeds that.
-MAX_BATCH_TOKENS = 8000
+# The estimate (4 chars/token) undercounts Swedish text, hence the margin.
+MAX_BATCH_TOKENS = 4000
 CHARS_PER_TOKEN = 4
 
 InputType = Literal["document", "query"]

@@ -91,17 +91,23 @@ class FetchedDoc:
     text: str
 
 
-def news_urls(today: date) -> list[str]:
-    """Candidate monthly news URLs. SCB's slugs are irregular, so missing ones 404."""
-    urls = []
+# The index was called Faktorprisindex until 2022, and older releases keep
+# that name in their URL. Each month is tried under both names.
+NEWS_SLUG_PREFIXES = ["byggkostnadsindex-for-byggnader", "faktorprisindex-for-byggnader"]
+
+
+def news_urls(today: date) -> list[list[str]]:
+    """Candidate URLs per month, in preference order. SCB's slugs are
+    irregular, so a month with no matching URL is reported as missing."""
+    months = []
     for year in range(NEWS_FROM_YEAR, today.year + 1):
         for i, month in enumerate(MONTHS_SV, start=1):
             if (year, i) > (today.year, today.month):
                 break
-            urls.append(
-                f"{BKI}/pong/statistiknyhet/byggkostnadsindex-for-byggnader-{month}-{year}/"
+            months.append(
+                [f"{BKI}/pong/statistiknyhet/{p}-{month}-{year}/" for p in NEWS_SLUG_PREFIXES]
             )
-    return urls
+    return months
 
 
 @http_retry
@@ -245,11 +251,16 @@ def main() -> None:
     args = parser.parse_args()
     setup_logging()
 
-    sources = STATIC_SOURCES + [(u, None) for u in news_urls(date.today())]
+    sources: list[tuple[list[str], str | None]] = [([u], t) for u, t in STATIC_SOURCES]
+    sources += [(candidates, None) for candidates in news_urls(date.today())]
     counts: dict[str, int] = {}
-    for url, title in sources:
+    for candidates, title in sources:
+        url = candidates[0]
         try:
-            doc = fetch(url, title)
+            doc = None
+            for url in candidates:
+                if (doc := fetch(url, title)) is not None:
+                    break
             status = "missing" if doc is None else store(doc, args.force)
         except Exception:
             # One bad page must not abort the run; the exit code still reports it.
