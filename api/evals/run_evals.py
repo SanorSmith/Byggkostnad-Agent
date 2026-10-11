@@ -18,17 +18,25 @@ from app.config import get_settings
 from app.db import connection
 from app.retrieval.search import search_docs
 from evals.metrics import (
+    answer_groundedness,
     groundedness,
     make_llm_judge,
     numeric_accuracy,
     numeric_correct,
+    parse_numbers,
     recall_at_5,
+    unsupported_figures,
 )
 
 HERE = Path(__file__).parent
 RESULTS_DIR = HERE / "results"
 METRICS = ("recall_at_5", "numeric_accuracy", "groundedness")
 REGRESSION_THRESHOLD = 0.03  # 3 percentage points
+# Bump when a metric's definition changes. The gate only compares runs with
+# the same version; scores under different definitions are not comparable.
+# v2: numeric figures must come from query_price_index; groundedness is 0 on
+# any unsupported figure (deterministic check or judge).
+METRICS_VERSION = "v2"
 
 # The design this project rejects: retrieve documents, let the model read
 # figures out of them. Used only as a comparison baseline.
@@ -62,7 +70,9 @@ def git_ref() -> str:
 def baseline() -> dict[str, Any] | None:
     with connection() as conn:
         row = conn.execute(
-            "select * from eval_runs where notes like 'ref=main%' order by run_at desc limit 1"
+            "select * from eval_runs where notes like 'ref=main%%' and notes like %s "
+            "order by run_at desc limit 1",
+            (f"%metrics={METRICS_VERSION}%",),
         ).fetchone()
     return dict(row) if row else None
 
@@ -91,6 +101,7 @@ def main() -> int:
     judge = make_llm_judge(get_client(), get_settings().judge_model)
 
     answers: dict[str, str] = {}
+    price_values: dict[str, list[float]] = {}
     ground_scores: list[float] = []
     rows: list[dict[str, Any]] = []
     for item in items:
@@ -104,10 +115,23 @@ def main() -> int:
             default=str,
             ensure_ascii=False,
         )
-        g = judge(result.answer, tool_output) if result.tool_calls else 0.0
+        # Figures the price tool computed or returned; document text excluded.
+        price_values[item["id"]] = parse_numbers(
+            json.dumps(
+                [c.output for c in result.tool_calls if c.name == "query_price_index"],
+                default=str,
+            )
+        )
+        missing = unsupported_figures(result.answer, tool_output)
+        g = answer_groundedness(result.answer, tool_output, judge) if result.tool_calls else 0.0
         ground_scores.append(g)
         num_ok = (
-            numeric_correct(result.answer, item["expected_value"], item["tolerance_pct"])
+            numeric_correct(
+                result.answer,
+                item["expected_value"],
+                item["tolerance_pct"],
+                price_values[item["id"]],
+            )
             if item["type"] in ("numeric", "hybrid")
             else None
         )
@@ -119,6 +143,7 @@ def main() -> int:
                 "tools_as_expected": set(item["expected_tools"]) <= set(called),
                 "numeric_ok": num_ok,
                 "groundedness": round(g, 3),
+                "unsupported_figures": missing,
                 "latency_ms": result.latency_ms,
                 "answer": result.answer,
             }
@@ -126,20 +151,22 @@ def main() -> int:
 
     scores = {
         "recall_at_5": recall_at_5(items, search_docs),
-        "numeric_accuracy": numeric_accuracy(items, answers),
+        "numeric_accuracy": numeric_accuracy(items, answers, price_values),
         "groundedness": groundedness(ground_scores),
     }
 
     lines = [
-        "| id | type | tools called | routing ok | numeric ok | grounded | latency |",
-        "|---|---|---|---|---|---|---|",
+        "| id | type | tools called | routing ok | numeric ok | grounded "
+        "| figures not in tool output | latency |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         num = "—" if r["numeric_ok"] is None else ("yes" if r["numeric_ok"] else "**no**")
+        missing_txt = ", ".join(f"{v:g}" for v in r["unsupported_figures"]) or "—"
         lines.append(
             f"| {r['id']} | {r['type']} | {', '.join(r['tools']) or '—'} | "
             f"{'yes' if r['tools_as_expected'] else '**no**'} | {num} | "
-            f"{r['groundedness']:.2f} | {r['latency_ms']} ms |"
+            f"{r['groundedness']:.2f} | {missing_txt} | {r['latency_ms']} ms |"
         )
 
     base = baseline() if args.compare else None
@@ -155,7 +182,10 @@ def main() -> int:
             f"| {m} | {fmt(cur)} | {fmt(prev)} | {'—' if delta is None else f'{delta:+.3f}'} |"
         )
     if args.compare and base is None:
-        lines.append("\nNo main baseline recorded yet; regression gate skipped.")
+        lines.append(
+            f"\nNo main baseline recorded yet for metrics {METRICS_VERSION}; "
+            "regression gate skipped."
+        )
     if failed:
         lines.append(f"\n**Regression > 3 pp in: {', '.join(failed)}**")
 
@@ -179,7 +209,7 @@ def main() -> int:
                     scores["recall_at_5"],
                     scores["numeric_accuracy"],
                     scores["groundedness"],
-                    f"ref={git_ref()}",
+                    f"ref={git_ref()};metrics={METRICS_VERSION}",
                 ),
             )
     return 1 if failed else 0
