@@ -185,3 +185,21 @@ Everything agrees, so I kept building.
   searches, so two visitors in the same minute exceed the quota. Adding a
   payment method raises the limit (the free token allowance still
   applies).
+
+## First evaluation (2026-10-11)
+
+- **The scaffold golden set scores 1.000 on every metric.** It is too easy
+  to be evidence. The scaffold is meant to be replaced.
+- **Pure RAG did not hallucinate numbers; it declined or did arithmetic.**
+  I expected a retrieval-only baseline to invent figures. With the
+  current model it either said the figure wasn't in the documents (2 of
+  6) or derived it from rounded figures quoted in releases (4 of 6, all
+  within tolerance). The case against pure RAG is that it depends on SCB
+  happening to print the inputs, and the model does arithmetic you can't
+  audit. It is not that the model makes numbers up. EVALS.md has the
+  detail.
+- **The groundedness judge missed a figure I deliberately falsified once,
+  and caught it on a re-run.** Per-claim averaging means one wrong
+  headline number moves the suite score by under 1 point, so the 3-point
+  regression gate cannot catch it. numeric_accuracy is the metric that
+  protects the numbers.

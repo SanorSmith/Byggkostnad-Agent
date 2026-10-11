@@ -8,6 +8,7 @@ output) is returned to the caller as a first-class part of the response.
 import json
 import logging
 import time
+from collections.abc import Collection
 from dataclasses import asdict, dataclass, field
 from datetime import date
 from typing import Any
@@ -123,13 +124,13 @@ def _text_of(content: list[Any]) -> str:
     return "\n".join(b.text for b in content if getattr(b, "type", None) == "text").strip()
 
 
-def _create(msgs: list[Any]) -> Any:
+def _create(msgs: list[Any], tools: list[dict[str, Any]], system: str) -> Any:
     s = get_settings()
     return get_client().beta.messages.create(  # type: ignore[call-overload]
         model=s.anthropic_model,
         max_tokens=MAX_TOKENS,
-        system=SYSTEM_PROMPT.format(today=date.today().isoformat()),
-        tools=TOOL_SCHEMAS,
+        system=system.format(today=date.today().isoformat()),
+        tools=tools,
         messages=msgs,
         output_config={"effort": s.anthropic_effort},
         betas=["server-side-fallback-2026-07-01"],
@@ -137,7 +138,15 @@ def _create(msgs: list[Any]) -> Any:
     )
 
 
-def run_agent(question: str) -> AgentResult:
+def run_agent(
+    question: str,
+    tool_names: Collection[str] | None = None,
+    system_prompt: str = SYSTEM_PROMPT,
+    log_query: bool = True,
+) -> AgentResult:
+    """Answer one question. `tool_names` and `system_prompt` exist for
+    evaluation baselines (e.g. retrieval only); the API uses the defaults."""
+    tools = [t for t in TOOL_SCHEMAS if tool_names is None or t["name"] in tool_names]
     started = time.perf_counter()
     msgs: list[Any] = [{"role": "user", "content": question}]
     tool_calls: list[ToolCall] = []
@@ -145,7 +154,7 @@ def run_agent(question: str) -> AgentResult:
 
     try:
         for _ in range(MAX_ITERATIONS):
-            resp = _create(msgs)
+            resp = _create(msgs, tools, system_prompt)
             if resp.stop_reason == "refusal":
                 result = AgentResult(
                     answer="The model declined to answer this question.", error="refusal"
@@ -197,7 +206,8 @@ def run_agent(question: str) -> AgentResult:
     result.tool_calls = tool_calls
     result.sources = collect_sources(tool_calls)
     result.latency_ms = int((time.perf_counter() - started) * 1000)
-    _log_query(question, result)
+    if log_query:
+        _log_query(question, result)
     return result
 
 

@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from app.agent.loop import get_client, run_agent
+from app.agent.loop import SYSTEM_PROMPT, get_client, run_agent
 from app.config import get_settings
 from app.db import connection
 from app.retrieval.search import search_docs
@@ -29,6 +29,15 @@ HERE = Path(__file__).parent
 RESULTS_DIR = HERE / "results"
 METRICS = ("recall_at_5", "numeric_accuracy", "groundedness")
 REGRESSION_THRESHOLD = 0.03  # 3 percentage points
+
+# The design this project rejects: retrieve documents, let the model read
+# figures out of them. Used only as a comparison baseline.
+RAG_ONLY_PROMPT = """You answer questions about Swedish construction cost statistics \
+(SCB's Byggkostnadsindex). Use the search_docs tool to find relevant SCB documents \
+and answer from them. Cite the document URL. Answer in English unless the question \
+is written entirely in Swedish. Be concise.
+
+Today's date is {today}."""
 
 
 def git_sha() -> str | None:
@@ -65,7 +74,17 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--compare", action="store_true")
     parser.add_argument("--no-record", action="store_true")
+    parser.add_argument(
+        "--baseline",
+        choices=["hybrid", "rag-only"],
+        default="hybrid",
+        help="rag-only: answer with search_docs alone and a plain RAG prompt (never recorded)",
+    )
     args = parser.parse_args()
+    if args.baseline != "hybrid":
+        args.no_record = True
+    tool_names = ["search_docs"] if args.baseline == "rag-only" else None
+    system_prompt = RAG_ONLY_PROMPT if args.baseline == "rag-only" else SYSTEM_PROMPT
 
     items = json.loads((HERE / "golden_set.json").read_text(encoding="utf-8"))["items"]
     judge = make_llm_judge(get_client(), get_settings().judge_model)
@@ -74,7 +93,9 @@ def main() -> int:
     ground_scores: list[float] = []
     rows: list[dict[str, Any]] = []
     for item in items:
-        result = run_agent(item["question"])
+        result = run_agent(
+            item["question"], tool_names, system_prompt=system_prompt, log_query=False
+        )
         answers[item["id"]] = result.answer
         called = [c.name for c in result.tool_calls]
         tool_output = json.dumps(
