@@ -248,11 +248,18 @@ def main() -> None:
     sources = STATIC_SOURCES + [(u, None) for u in news_urls(date.today())]
     counts: dict[str, int] = {}
     for url, title in sources:
-        doc = fetch(url, title)
-        status = "missing" if doc is None else store(doc, args.force)
+        try:
+            doc = fetch(url, title)
+            status = "missing" if doc is None else store(doc, args.force)
+        except Exception:
+            # One bad page must not abort the run; the exit code still reports it.
+            logger.exception("document failed: %s", url)
+            status = "failed"
         counts[status] = counts.get(status, 0) + 1
         log(logger, "document", url=url, status=status)
     log(logger, "done", **counts)
+    if counts.get("failed"):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     embedding_model: str = "voyage-3"
     embedding_dim: int = 1024
     voyage_api_key: str = ""
+    # Requests per minute to Voyage during ingest. 3 fits the no-payment-method
+    # tier; raise it (or set 0 for no client-side cap) on a paid tier.
+    voyage_rpm: int = 3
 
     scb_base_url: str = DEFAULT_SCB_BASE_URL
 
